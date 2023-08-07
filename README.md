@@ -1,3 +1,14 @@
+# Dragon's Maze
+
+## TO-DO
+
+- ~~~Implement the Hand System~~~
+- Get Multiplayer Working using WebSockets
+- Save Player Info
+- Create Match Creation Tool
+- Add Customizable Pieces
+
+
 # Create T3 App
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
