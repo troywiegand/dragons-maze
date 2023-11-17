@@ -24,7 +24,7 @@ const initialPosition = [
 
 const PIECE_CLASS = 'align-middle	text-center text-7xl'
 
-const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTurn, setCurrentTurn }) => {
+const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTurn, setCurrentTurn, whiteKingPiece }) => {
 
   const [selectedPiece, setSelectedPiece] = useState(-10);
 
@@ -165,7 +165,7 @@ const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTur
       case Pieces.WhitePawn:
         return <button onClick={makeMoveOrSetSelectedPiece(gameStateLocation,Turn.White)} disabled={!(currentTurn === Turn.White) && !(selectedPiece > 0 && currentTurn === Turn.Black && IsValidMove(gameStateLocation))} className={PIECE_CLASS+((selectedPiece > 0 && currentTurn === Turn.Black && IsValidMove(gameStateLocation))?' bg-red-400':'')}>♙</button>
       case Pieces.WhiteKing:
-        return <button onClick={makeMoveOrSetSelectedPiece(gameStateLocation,Turn.White)} disabled={!(currentTurn === Turn.White) && !(selectedPiece > 0 && currentTurn === Turn.Black && IsValidMove(gameStateLocation))} className={PIECE_CLASS+((selectedPiece > 0 && currentTurn === Turn.Black && IsValidMove(gameStateLocation))?' bg-red-400':'')}>♔</button>
+        return <button onClick={makeMoveOrSetSelectedPiece(gameStateLocation,Turn.White)} disabled={!(currentTurn === Turn.White) && !(selectedPiece > 0 && currentTurn === Turn.Black && IsValidMove(gameStateLocation))} className={PIECE_CLASS+((selectedPiece > 0 && currentTurn === Turn.Black && IsValidMove(gameStateLocation))?' bg-red-400':'')}>{whiteKingPiece? <img src={whiteKingPiece}></img> :'♔'}</button>
       default:
         return IsValidMove(gameStateLocation) ? <button onClick={performMove(gameStateLocation)} className=' w-12 h-12 bg-red-400' /> : <div />
     }

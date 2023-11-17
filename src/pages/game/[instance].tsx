@@ -46,19 +46,19 @@ export default function Page() {
     {gameState.includes(4) && !gameState.includes(2) && <><p>BLACK WINS</p><button onClick={resetGame}>RESET</button></>}
     {gameState.includes(2) && !gameState.includes(4) && <><p>WHITE WINS</p><button onClick={resetGame}>RESET</button></>}
 
-    { card && <GameBoard gameState={gameState} setGameState={updateGameState} card={card } currentTurn={currentTurn} setCurrentTurn={setCurrentTurn} /> }
+    { card && <GameBoard gameState={gameState} setGameState={updateGameState} card={card } currentTurn={currentTurn} setCurrentTurn={setCurrentTurn} whiteKingPiece={sessionData?.user?.image}/> }
 
     <p>BLACK HAND:</p>
     <div className='flex flex-row'>
     {blackCards.map(x => (
-      <MoveCard pattern={x} cardClick={()=>{currentTurn === -1 ? setCard(x) : ()=>{}}} />
+      <MoveCard pattern={x} isSelected={card==x} cardClick={()=>{currentTurn === -1 ? setCard(x) : ()=>{}}} />
     ))}
     </div>
 
     <p>WHITE HAND:</p>
     <div className='flex flex-row'>
     {whiteCards.map(x => (
-      <MoveCard pattern={x} cardClick={()=>{currentTurn === 1 ? setCard(x) : ()=>{}}} />
+      <MoveCard pattern={x} isSelected={card==x} cardClick={()=>{currentTurn === 1 ? setCard(x) : ()=>{}}} />
     ))}
     </div>
 
