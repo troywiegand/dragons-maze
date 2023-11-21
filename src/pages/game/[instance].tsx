@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import MoveCard from '~/components/MoveCard';
-import GameBoard from '~/components/GameBoard';
+import GameBoard, {Turn, Pieces} from '~/components/GameBoard';
 
 const INIT_BOARD = [3, 3, 4, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1];
 
+const emptyCard = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 const card1 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-const card2 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0];
-const card3 = [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+const card2 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const card3 = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
 const card4 = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0];
 const card5 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0];
+
+type GameState = Array<Pieces>
 
 
 export default function Page() {
@@ -30,13 +33,15 @@ export default function Page() {
     setGameState(INIT_BOARD)
   }
 
-  const updateGameState = (x) => {
+  const updateGameState = (x: GameState) => {
     setGameState(x)
-    currentTurn === 1 && setWhiteCards([neutralCards[0], ...[whiteCards.find(c=>c!==card)]])
-    currentTurn === -1 && setBlackCards([neutralCards[0], ...[blackCards.find(c=>c!==card)]])
+    currentTurn === 1 && setWhiteCards([neutralCards[0] || emptyCard, ...[whiteCards.find(c=>c!==card) || emptyCard]])
+    currentTurn === -1 && setBlackCards([neutralCards[0] || emptyCard, ...[blackCards.find(c=>c!==card) || emptyCard]])
     setNeutralCards([card])
-    setCard(currentTurn===-1 ? whiteCards[0]: blackCards[0])
+    setCard((currentTurn===-1 ? whiteCards[0]: blackCards[0]) || emptyCard)
   }
+
+  const backgroundTurn = (ct: Turn) => currentTurn === ct ? 'bg-green-200' : ''
 
   return <>
     {/* {sessionData.user && <img src={sessionData?.user?.image || undefined}></img>} */}
@@ -46,26 +51,35 @@ export default function Page() {
     {gameState.includes(4) && !gameState.includes(2) && <><p>BLACK WINS</p><button onClick={resetGame}>RESET</button></>}
     {gameState.includes(2) && !gameState.includes(4) && <><p>WHITE WINS</p><button onClick={resetGame}>RESET</button></>}
 
-    { card && <GameBoard gameState={gameState} setGameState={updateGameState} card={card } currentTurn={currentTurn} setCurrentTurn={setCurrentTurn} /> }
-
-    <p>BLACK HAND:</p>
+    <div className='flex flex-row'>
+    <div className={`${backgroundTurn(-1)} h-81 p-1`}>
+    <h2>BLACK HAND:</h2>
     <div className='flex flex-row'>
     {blackCards.map(x => (
-      <MoveCard pattern={x} cardClick={()=>{currentTurn === -1 ? setCard(x) : ()=>{}}} />
+      <MoveCard pattern={x} isSelected={card===x} cardClick={()=>{currentTurn === -1 ? setCard(x) : ()=>{}}} />
     ))}
     </div>
+    </div>
+    { card && <GameBoard gameState={gameState} setGameState={updateGameState} card={card } currentTurn={currentTurn} setCurrentTurn={setCurrentTurn} /> }
 
-    <p>WHITE HAND:</p>
+    <div className={`${backgroundTurn(1)} h-81 p-1`}>
+    <h2>WHITE HAND:</h2>
     <div className='flex flex-row'>
     {whiteCards.map(x => (
-      <MoveCard pattern={x} cardClick={()=>{currentTurn === 1 ? setCard(x) : ()=>{}}} />
+      <MoveCard pattern={x} isSelected={card===x} cardClick={()=>{currentTurn === 1 ? setCard(x) : ()=>{}}} />
     ))}
     </div>
+    </div>
+
+    </div>
+
+
+
 
     <p>NEUTRAL CARDS:</p>
     <div className='flex flex-row'>
     {neutralCards.map(x => (
-      <MoveCard pattern={x} cardClick={()=>{}} />
+      <MoveCard pattern={x}/>
     ))}
     </div>
   </>;

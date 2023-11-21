@@ -5,7 +5,7 @@ enum MoveCardPosValue {
 }
 
 
-const MoveCard = ({ pattern = (new Array(25)).fill(0), cardClick }) => {
+const MoveCard = ({ pattern = (new Array(25)).fill(0), isSelected=false, cardClick=()=>{}}) => {
 
   const moveColor = (posValue: MoveCardPosValue) => {
     switch (posValue) {
@@ -14,14 +14,15 @@ const MoveCard = ({ pattern = (new Array(25)).fill(0), cardClick }) => {
       case MoveCardPosValue.Valid:
         return 'bg-blue-800'
       default:
-        return 'bg-inherit'
+        return 'bg-yellow-400'
     }
   }
 
-  console.log(pattern)
+  const borderColor = (b: Boolean) => b ? 'bg-green-400' : 'bg-yellow-400'
+
   return (
     <>
-      <div onClick={cardClick} className="bg-yellow-400 w-80 place-items-stretch rounded-md p-5 overflow-hidden">
+      <div onClick={cardClick} className={` ${borderColor(isSelected)} w-80 h-80 place-items-stretch rounded-md p-5 overflow-hidden mx-2`}>
         <div className=" container grid grid grid-cols-5 gap-0 overflow-hidden	">
           {pattern?.map((x: MoveCardPosValue, i) => {
             return <div key={`spot-${i}`} className={`h-14 w-14 ${moveColor(x)} text-black border border-black`} />

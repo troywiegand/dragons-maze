@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, Dispatch, SetStateAction} from 'react';
+import { number } from 'zod';
 
-enum Pieces {
+export enum Pieces {
   None = 0,
   WhitePawn = 1,
   WhiteKing = 2,
@@ -8,7 +9,7 @@ enum Pieces {
   BlackKing = 4
 }
 
-enum Turn {
+export enum Turn {
   None = 0,
   White = 1,
   Black = -1
@@ -24,12 +25,12 @@ const initialPosition = [
 
 const PIECE_CLASS = 'align-middle	text-center text-7xl'
 
-const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTurn, setCurrentTurn }) => {
+const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTurn, setCurrentTurn }: {gameState: Array<Pieces>, setGameState: (x:Array<Pieces>)=>void, card: Array<number>, currentTurn: Turn, setCurrentTurn: Dispatch<SetStateAction<number>>}) => {
 
   const [selectedPiece, setSelectedPiece] = useState(-10);
 
   const performMove = (gameStateLocation: number) => {
-    return (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    return () => {
       const newGame = JSON.parse(JSON.stringify(gameState))
       newGame[gameStateLocation] = gameState[selectedPiece]
       newGame[selectedPiece] = Pieces.None
@@ -140,20 +141,22 @@ const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTur
   }
 
   const moveFunctions = [
-    cardFunc0, cardFunc1, cardFunc2, cardFunc3, cardFunc4, cardFunc5, cardFunc6, cardFunc7, cardFunc8, cardFunc9, cardFunc10, cardFunc11, ()=>{} ,cardFunc13, cardFunc14, cardFunc15, cardFunc16, cardFunc17, cardFunc18, cardFunc19, cardFunc20, cardFunc21, cardFunc22, cardFunc23, cardFunc24
+    cardFunc0, cardFunc1, cardFunc2, cardFunc3, cardFunc4, cardFunc5, cardFunc6, cardFunc7, cardFunc8, cardFunc9, cardFunc10, cardFunc11, (gsl: number, sp: number, ct: Turn)=>{return false} ,cardFunc13, cardFunc14, cardFunc15, cardFunc16, cardFunc17, cardFunc18, cardFunc19, cardFunc20, cardFunc21, cardFunc22, cardFunc23, cardFunc24
 
   ]
 
-  console.log(card, moveFunctions, card[0], card[0]===1,  card.map((x,i)=>x?`${i}`:0).filter(x=>x))
-
   const IsValidMove = (gameStateLocation: number) => {
-    return selectedPiece >= 0 && card.map((x,i)=>x?`${i}`:0).filter(x=>x).some(x=>moveFunctions[Number.parseInt(x)](gameStateLocation,selectedPiece,currentTurn))
+    return selectedPiece >= 0 && card.map((x:Pieces,i:number)=>x?`${i}`:0).filter((x:string|0)=>x).some((x:string|0)=>{
+      const index = Number.parseInt(x||'0');
+      const moveFunction = moveFunctions[index];
+      return moveFunction && moveFunction(gameStateLocation, selectedPiece, currentTurn);
+    })
     // (moveFunctions.filter((x,i)=>{card[i]===1}).some(x=>x(gameStateLocation,selectedPiece,currentTurn)))
   }
 
-  const makeMoveOrSetSelectedPiece = (gameStateLocation: number, whatPlayer: Turn, card: number[]) => {
-    return (event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      currentTurn === whatPlayer ? setSelectedPiece(gameStateLocation) : performMove(gameStateLocation)(event) 
+  const makeMoveOrSetSelectedPiece = (gameStateLocation: number, whatPlayer: Turn,) => {
+    return () => {
+      currentTurn === whatPlayer ? setSelectedPiece(gameStateLocation) : performMove(gameStateLocation)() 
     }
   }
   const createPiece = (piece: Pieces, gameStateLocation: number) => {
@@ -173,8 +176,8 @@ const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTur
 
   return (
     <>
-      {selectedPiece}
-      MOVE: {currentTurn === Turn.Black ? 'BLACK' : 'WHITE'}
+      {/* {selectedPiece}
+      MOVE: {currentTurn === Turn.Black ? 'BLACK' : 'WHITE'} */}
       <div className="bg-orange-100 max-w-96 rounded-md p-12 overflow-hidden	">
         <div className=" container grid grid grid-cols-5 gap-0 max-w-96 justify-center justify-items-stretch">
           {gameState?.map((x: Pieces, i) => {
