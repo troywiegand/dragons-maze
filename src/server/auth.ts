@@ -5,6 +5,7 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "~/env.mjs";
 
 /**
@@ -48,6 +49,15 @@ export const authOptions: NextAuthOptions = {
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
+    CredentialsProvider({
+      name: "Guest Name",
+      credentials: {
+        username: { label: "Nickname", type: "text", placeholder: 'Guest'}
+      },
+      async authorize(credentials, req) {
+        return {id: "1", user:credentials?.username}
+      }
+    })
     /**
      * ...add more providers here.
      *
