@@ -51,11 +51,12 @@ export const authOptions: NextAuthOptions = {
     }),
     CredentialsProvider({
       name: "Guest Name",
+      id: 'guest',
       credentials: {
-        username: { label: "Nickname", type: "text", placeholder: 'Guest'}
+        username: { label: "Guest Name", type: "text", placeholder: 'Troy' }
       },
       async authorize(credentials, req) {
-        return {id: "1", user:credentials?.username}
+        return { id: "Guest - 1", name: `Guest ${credentials?.username}` }
       }
     })
     /**
