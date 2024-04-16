@@ -43,21 +43,21 @@ export default function Page() {
     setCard((currentTurn === -1 ? whiteCards[0] : blackCards[0]) || emptyCard)
   }
 
-  const backgroundTurn = (ct: Turn) => currentTurn === ct ? 'bg-green-200' : ''
+  const backgroundTurn = (ct: Turn) => currentTurn === ct ? 'bg-green-200' : 'bg-orange-100'
 
   return <>
     <Head>
       <title>Dragon's Maze Lobby #{router.query.instance}</title>
     </Head>
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e050d] to-[#140301]">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#3A4A41] to-[#455148]">
       <h3 className='items-center justify-center text-xl text-center text-white'>Lobby #{router.query.instance}{sessionData ? ` - ${sessionData?.user.name}` : ''}</h3>
       {gameState.includes(4) && !gameState.includes(2) && <><p className='items-center justify-center text-xl text-center'>BLACK WINS <ResetButton onClick={resetGame} /></p></>}
       {gameState.includes(2) && !gameState.includes(4) && <><p className='items-center justify-center text-xl text-center'>WHITE WINS <ResetButton onClick={resetGame} /></p></>}
 
-      <div className='flex flex-row items-center'>
-        <div className={`${backgroundTurn(-1)} h-81 p-1`}>
-          <h2 className='text-amber-600'>BLACK HAND:</h2>
-          <div className='flex flex-row'>
+      <div className='flex flex-col lg:flex-row items-center mb-4 gap-4 lg:gap-0'>
+        <div className={`${backgroundTurn(-1)} h-81 p-1 mr-4 border border-orange-100`}>
+          <h2 className='text-emerald-500 text-center'>BLACK HAND</h2>
+          <div className='flex flex-row lg:flex-col 2xl:flex-row gap-4'>
             {blackCards.map(x => (
               <MoveCard pattern={x} isSelected={card === x} cardClick={() => { currentTurn === -1 ? setCard(x) : () => { } }} />
             ))}
@@ -65,9 +65,9 @@ export default function Page() {
         </div>
         {card && <GameBoard gameState={gameState} setGameState={updateGameState} card={card} currentTurn={currentTurn} setCurrentTurn={setCurrentTurn} />}
 
-        <div className={`${backgroundTurn(1)} h-81 p-1`}>
-          <h2 className='text-amber-600'>WHITE HAND:</h2>
-          <div className='flex flex-row'>
+        <div className={`${backgroundTurn(1)} h-81 p-1 ml-4 border border-orange-100`}>
+          <h2 className='text-emerald-500 text-center'>WHITE HAND</h2>
+          <div className='flex flex-row lg:flex-col 2xl:flex-row gap-4'>
             {whiteCards.map(x => (
               <MoveCard pattern={x} isSelected={card === x} cardClick={() => { currentTurn === 1 ? setCard(x) : () => { } }} />
             ))}
@@ -78,12 +78,13 @@ export default function Page() {
 
 
 
-
-      <p>NEUTRAL CARDS:</p>
+      <div className={`bg-orange-100 h-81 rounded-md p-1 ml-4`}>
+      <h2 className='text-emerald-500 text-center'>NUETRAL CARD</h2>
       <div className='flex flex-row'>
         {neutralCards.map(x => (
           <MoveCard pattern={x} />
         ))}
+      </div>
       </div>
     </main>
   </>;

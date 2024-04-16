@@ -178,10 +178,10 @@ const GameBoard = ({ gameState = initialPosition, setGameState, card, currentTur
     <>
       {/* {selectedPiece}
       MOVE: {currentTurn === Turn.Black ? 'BLACK' : 'WHITE'} */}
-      <div className="bg-orange-100 max-w-96 rounded-md p-12 overflow-hidden	">
-        <div className=" container grid grid grid-cols-5 gap-0 max-w-96 justify-center justify-items-stretch">
+      <div className="bg-orange-100 w-[496px] rounded-md p-12">
+        <div className=" container grid grid grid-cols-5 gap-0 w-[400px] justify-center justify-items-stretch">
           {gameState?.map((x: Pieces, i) => {
-            return <div key={`spot-${i}`} className={`h-20 w-15 text-black border border-black `}>
+            return <div key={`spot-${i}`} className={`h-20 w-20 text-black border border-black `}>
               {createPiece(x, i)}
             </div>
           })}
